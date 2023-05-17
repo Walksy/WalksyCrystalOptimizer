@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "walksycrystaloptimizer",
+  "version": "${version}",
+
+  "name": "Walksy Optimizer",
+  "description": "Allows you to place crystals much faster",
+  "authors": [
+    "Walksy"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Walksy"
+  },
+
+  "license": "MIT",
+  "icon": "assets/optimizer/icon.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "walksy.optimizer.WalksyCrystalOptimizerMod"
+    ]
+  },
+
+  "mixins": [
+    "crystaloptimizer.mixins.json"
+  ],
+
+  "depends": {
+    "midnightlib": "*"
+  }
+}
