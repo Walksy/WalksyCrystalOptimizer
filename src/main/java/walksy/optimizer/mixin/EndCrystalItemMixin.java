@@ -51,7 +51,7 @@ public class EndCrystalItemMixin {
     }
 
     private Vec3d getClientLookVec() {
-        return getPlayerLookVec((PlayerEntity)mc.player);
+        return getPlayerLookVec((PlayerEntity) mc.player);
     }
 
     private boolean isBlock(Block block, BlockPos pos) {
@@ -76,41 +76,13 @@ public class EndCrystalItemMixin {
         return list.isEmpty();
     }
 
-    private boolean canPlaceCrystalClient(BlockPos block)
-    {
-        BlockState blockState = mc.world.getBlockState(block);
-        if (!blockState.isOf(Blocks.OBSIDIAN) && !blockState.isOf(Blocks.BEDROCK))
-            return false;
-        return canPlaceCrystalClientAssumeObsidian(block);
-    }
-
-    private boolean canPlaceCrystalClientAssumeObsidian(BlockPos block)
-    {
-        BlockPos blockPos2 = block.up();
-        if (!mc.world.isAir(blockPos2))
-            return false;
-        double d = blockPos2.getX();
-        double e = blockPos2.getY();
-        double f = blockPos2.getZ();
-        List<Entity> list = mc.world.getOtherEntities((Entity)null, new Box(d, e, f, d + 1.0D, e + 2.0D, f + 1.0D));
-        return list.isEmpty();
-    }
 
 
-    private boolean canPlaceCrystalClientAssumeObsidian(BlockPos block, Box bb)
-    {
-        BlockPos blockPos2 = block.up();
-        if (!mc.world.isAir(blockPos2))
-            return false;
-        double d = blockPos2.getX();
-        double e = blockPos2.getY();
-        double f = blockPos2.getZ();
-        Box crystalBox = new Box(d, e, f, d + 1.0D, e + 2.0D, f + 1.0D);
-        if (crystalBox.intersects(bb))
-            return false;
-        List<Entity> list = mc.world.getOtherEntities((Entity)null, crystalBox);
-        return list.isEmpty();
-    }
+
+    /**
+     * Stops crystals from decreasing too much
+     * PS: does not work on singleplayer
+     */
 
     @Inject(method = {"useOnBlock"}, at = {@At("HEAD")}, cancellable = true)
     private void modifyDecrementAmount(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {

@@ -6,11 +6,16 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.mob.MagmaCubeEntity;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -18,6 +23,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,15 +31,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import walksy.optimizer.command.EnableOptimizerCommand;
 
 import static walksy.optimizer.WalksyCrystalOptimizerMod.mc;
+import static walksy.optimizer.command.EnableOptimizerCommand.displayMessage;
 
 @Mixin(ClientPlayerEntity.class)
-public class ClientPlayerEntityMixin  {
+public abstract class ClientPlayerEntityMixin {
 
     /**
      * @Author Walksy
      */
-
-
 
 
     private static Vec3d getPlayerLookVec(PlayerEntity player) {
@@ -46,9 +51,26 @@ public class ClientPlayerEntityMixin  {
         return new Vec3d(f2 * f3, f4, f1 * f3).normalize();
     }
 
-    private  Vec3d getClientLookVec() {
+    private static Vec3d getClientLookVec() {
         return getPlayerLookVec(mc.player);
     }
+
+
+    private int getPing() {
+        if (mc.getNetworkHandler() == null) return 0;
+
+        PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid());
+        if (playerListEntry == null) return 0;
+        return playerListEntry.getLatency();
+    }
+
+    private int shouldStopInt() {
+        int stop = 2;
+        if (getPing() > 70) stop = 2;
+        if (getPing() < 70) stop = 1;
+        return stop;
+    }
+
     private int hasCrystaled;
     private int stopAutoCrystalFix;
 
@@ -65,9 +87,12 @@ public class ClientPlayerEntityMixin  {
         if (!mc.options.attackKey.isPressed()) {
             stopAutoCrystalFix = 0;
         }
-        if (hasCrystaled == 2) {
+
+        if (hasCrystaled == shouldStopInt()) {
             return;
         }
+
+
         ItemStack mainHandStack = mc.player.getMainHandStack();
         if (!mainHandStack.isOf(Items.END_CRYSTAL))
             return;
@@ -83,9 +108,16 @@ public class ClientPlayerEntityMixin  {
                     mc.player.swingHand(Hand.MAIN_HAND);
                     stopAutoCrystalFix++;
                     hasCrystaled++;
-                    //DonutSMP + EastPVP bypass
+
+                //DonutSMP + EastPVP bypass
                 } else if (hitEntity.getEntity() instanceof MagmaCubeEntity magma) {
                     mc.interactionManager.attackEntity(mc.player, magma);
+                    mc.player.swingHand(Hand.MAIN_HAND);
+                    stopAutoCrystalFix++;
+                    hasCrystaled++;
+
+                } else if (hitEntity.getEntity() instanceof SlimeEntity slime) {
+                    mc.interactionManager.attackEntity(mc.player, slime);
                     mc.player.swingHand(Hand.MAIN_HAND);
                     stopAutoCrystalFix++;
                     hasCrystaled++;
@@ -94,7 +126,7 @@ public class ClientPlayerEntityMixin  {
         }
 
         if (mc.options.useKey.isPressed()) {
-            if (isLookingAt(Blocks.OBSIDIAN, lookPos.getBlockPos())) {
+            if (isLookingAt(Blocks.OBSIDIAN, lookPos.getBlockPos()) || isLookingAt(Blocks.BEDROCK, lookPos.getBlockPos())) {
                 ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, lookPos);
                 if (result.isAccepted() && result.shouldSwingHand())
                     //sends interactBlock Packets while the crystal is still placed, so when broken placement speed is much faster
