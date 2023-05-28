@@ -1,6 +1,5 @@
 package walksy.optimizer.mixin;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,7 +11,7 @@ public abstract class ItemStackMixin {
 
 
     @Inject(method = {"getBobbingAnimationTime"}, at = {@At("HEAD")}, cancellable = true)
-    private void reducePlaceDelay(CallbackInfoReturnable<Integer> info) {
+    private void stopBobbingAnimation(CallbackInfoReturnable<Integer> info) {
         info.setReturnValue(0);
     }
 }

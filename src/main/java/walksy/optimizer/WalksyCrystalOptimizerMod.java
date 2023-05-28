@@ -9,6 +9,10 @@ import walksy.optimizer.command.EnableOptimizerCommand;
 public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     public static MinecraftClient mc;
 
+    /**
+     * just because his mod works, doesn't mean it should be banned - Walksy's Mother
+     */
+
     @Override
     public void onInitializeClient() {
         mc = MinecraftClient.getInstance();
