@@ -5,8 +5,7 @@
   "client": [
     "ClientPlayerEntityMixin",
     "EndCrystalItemMixin",
-    "ItemStackMixin",
-    "ClientWorldMixin"
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -71,10 +71,7 @@ public abstract class ClientPlayerEntityMixin {
             if (PacketUtils.isLookingAt(Blocks.OBSIDIAN, lookPos.getBlockPos()) || PacketUtils.isLookingAt(Blocks.BEDROCK, lookPos.getBlockPos())) {
                 ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, lookPos);
                 if (result.isAccepted() && result.shouldSwingHand()) {
-                    //cancels custom interactBlock packets being sent while a crystal is placed
-                    if (PacketUtils.canPlaceCrystalServer(lookPos.getBlockPos())) {
-                        PacketUtils.interact(lookPos.getBlockPos(), lookPos.getSide());
-                    }
+                    PacketUtils.interact(lookPos.getBlockPos(), lookPos.getSide());
                 }
             }
         }
