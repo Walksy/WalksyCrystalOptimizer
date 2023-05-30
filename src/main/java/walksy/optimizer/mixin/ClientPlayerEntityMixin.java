@@ -31,6 +31,7 @@ public abstract class ClientPlayerEntityMixin {
      */
 
     private int hitCount;
+    private int breakingBlockTick;
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;tick()V", ordinal = 0), method = "tick()V")
     private void useOwnTicks(CallbackInfo ci) {
@@ -42,7 +43,11 @@ public abstract class ClientPlayerEntityMixin {
             Vec3d camPos = mc.player.getEyePos();
             Vec3d clientLookVec = PacketUtils.getClientLookVec();
             BlockHitResult lookPos = mc.world.raycast(new RaycastContext(camPos, camPos.add(clientLookVec.multiply(4.5)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
-            if (mc.interactionManager.isBreakingBlock() && PacketUtils.isBlock(Blocks.OBSIDIAN,lookPos.getBlockPos()))
+            if (mc.interactionManager.isBreakingBlock() && PacketUtils.isBlock(Blocks.OBSIDIAN,lookPos.getBlockPos())) {
+                breakingBlockTick++;
+            } else breakingBlockTick = 0;
+
+            if (breakingBlockTick > 5)
                 return;
             if (!isUseKeyPressed) {
                 hitCount = 0;
