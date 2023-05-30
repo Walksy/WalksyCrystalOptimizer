@@ -42,7 +42,7 @@ public abstract class ClientPlayerEntityMixin {
             Vec3d camPos = mc.player.getEyePos();
             Vec3d clientLookVec = PacketUtils.getClientLookVec();
             BlockHitResult lookPos = mc.world.raycast(new RaycastContext(camPos, camPos.add(clientLookVec.multiply(4.5)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
-            if (isAttackKeyPressed && PacketUtils.isBlock(Blocks.OBSIDIAN,lookPos.getBlockPos()))
+            if (mc.interactionManager.isBreakingBlock() && PacketUtils.isBlock(Blocks.OBSIDIAN,lookPos.getBlockPos()))
                 return;
             if (!isUseKeyPressed) {
                 hitCount = 0;
