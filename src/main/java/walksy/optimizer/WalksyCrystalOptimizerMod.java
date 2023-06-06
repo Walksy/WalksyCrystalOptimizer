@@ -15,6 +15,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -62,10 +66,12 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
             return;
         if (lookingAtSaidEntity()) {
             if (mc.options.attackKey.isPressed()) {
-                //removeSaidEntity().kill();
-                //removeSaidEntity().setRemoved(Entity.RemovalReason.KILLED);
-                //removeSaidEntity().onRemoved();
-                //mc.getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.attack(removeSaidEntity(), mc.player.isSneaking()));
+                if (hitCount >= 1) {
+                    removeSaidEntity().kill();
+                    removeSaidEntity().setRemoved(Entity.RemovalReason.KILLED);
+                    removeSaidEntity().onRemoved();
+                    mc.getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.attack(removeSaidEntity(), mc.player.isSneaking()));
+                }
                 hitCount++;
             }
         }
@@ -82,6 +88,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
             }
         }
     }
+
 
 
     private static BlockState getBlockState(BlockPos pos) {
