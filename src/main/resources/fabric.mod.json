@@ -12,7 +12,6 @@
     "homepage": "https://github.com/Walksy"
   },
 
-  "license": "MIT",
   "icon": "assets/optimizer/icon.png",
 
   "environment": "client",
