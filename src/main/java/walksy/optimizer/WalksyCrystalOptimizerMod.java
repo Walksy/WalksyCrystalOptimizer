@@ -56,7 +56,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
             breakingBlockTick++;
         } else breakingBlockTick = 0;
 
-        if (breakingBlockTick > 5)
+        if (breakingBlockTick > 2)
             return;
 
         if (!mc.options.useKey.isPressed()) {
