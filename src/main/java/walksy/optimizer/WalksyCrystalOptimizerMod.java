@@ -69,7 +69,6 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
                     removeSaidEntity().kill();
                     removeSaidEntity().setRemoved(Entity.RemovalReason.KILLED);
                     removeSaidEntity().onRemoved();
-                    mc.getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.attack(removeSaidEntity(), mc.player.isSneaking()));
                 }
                 hitCount++;
             }
