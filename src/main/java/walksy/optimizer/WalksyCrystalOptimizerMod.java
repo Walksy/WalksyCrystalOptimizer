@@ -51,8 +51,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     public static void useOwnTicks() {
         ItemStack mainHandStack = mc.player.getMainHandStack();
 
-        if (mc.interactionManager.isBreakingBlock() && isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
-                || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos())) {
+        if (mc.options.attackKey.isPressed()) {
             breakingBlockTick++;
         } else breakingBlockTick = 0;
 
