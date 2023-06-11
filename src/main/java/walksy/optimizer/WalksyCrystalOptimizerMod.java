@@ -77,8 +77,8 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
             return;
         }
         if (mc.options.useKey.isPressed()
-                && isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
-                || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos()))
+                && (isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
+                || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos())))
         {
             sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
             if (canPlaceCrystalServer(generalLookPos().getBlockPos())) {
