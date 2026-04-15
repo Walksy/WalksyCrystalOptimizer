@@ -11,21 +11,14 @@
   "contact": {
     "homepage": "https://github.com/Walksy"
   },
-
   "icon": "assets/optimizer/icon.png",
-
   "environment": "client",
   "entrypoints": {
     "client": [
-      "walksy.optimizer.WalksyCrystalOptimizerMod"
+      "walksy.optimizer.WalksyCrystalOptimizer"
     ]
   },
-
   "mixins": [
     "crystaloptimizer.mixins.json"
-  ],
-
-  "depends": {
-    "midnightlib": "*"
-  }
+  ]
 }
